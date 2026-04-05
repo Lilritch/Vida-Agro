@@ -9,12 +9,27 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
-export function CTASection() {
+interface CTASectionProps {
+  blendFromDark?: boolean;
+}
+
+export function CTASection({ blendFromDark = false }: CTASectionProps) {
   return (
     <section
       data-aos="fade-up"
-      className="relative overflow-hidden bg-gradient-to-br from-forest-green via-forest-green to-forest-green-dark py-20 lg:py-32"
+      className={`relative overflow-hidden ${
+        blendFromDark
+          ? "bg-[linear-gradient(180deg,#173626_0%,#1a3d2e_16%,#1f4634_44%,#224d39_68%,#f5f0e1_100%)] py-20 lg:py-32"
+          : "bg-gradient-to-br from-forest-green via-forest-green to-forest-green-dark py-20 lg:py-32"
+      }`}
     >
+      {blendFromDark ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#173626] to-transparent"
+        />
+      ) : null}
+
       {/* Background decorations */}
       <div className="absolute inset-0">
         <div
@@ -33,7 +48,7 @@ export function CTASection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center max-w-3xl mx-auto"
+          className={`mx-auto max-w-3xl text-center ${blendFromDark ? "lg:-mt-4" : ""}`}
         >
           <motion.span
             variants={fadeUp}

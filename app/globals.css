@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Outfit:wght@300;400;500&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -71,10 +72,12 @@
 }
 
 @theme inline {
-  --font-sans: 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif;
-  --font-serif: 'Playfair Display', 'Playfair Display Fallback', Georgia, serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
-  
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-heading: "Fraunces", Georgia, serif;
+  --font-body: "Outfit", system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
+
   /* Brand colors */
   --color-forest-green: #1a3d2e;
   --color-forest-green-dark: #0d1f14;
@@ -85,7 +88,7 @@
   --color-cream: #f5f0e1;
   --color-cream-dark: #e8e0c8;
   --color-charcoal: #0d1f14;
-  
+
   /* Semantic colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -123,15 +126,20 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  
+
   /* Custom animations */
   --animate-float: float 6s ease-in-out infinite;
   --animate-float-delayed: float 6s ease-in-out 2s infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  
+
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
   }
 }
 
@@ -140,14 +148,44 @@
     @apply border-border outline-ring/50;
   }
   html {
+    font-family: "Outfit", system-ui, sans-serif;
     @apply bg-white;
     overflow-x: hidden;
     scrollbar-width: none;
   }
   body {
+    font-family: "Outfit", system-ui, sans-serif;
+    font-weight: 400;
     @apply bg-background text-foreground;
     overflow-x: hidden;
     scrollbar-width: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 700;
+  }
+
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-bold;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  nav,
+  [role="navigation"] {
+    font-family: "Outfit", system-ui, sans-serif;
   }
 }
 
@@ -169,7 +207,7 @@ html {
 
 /* Kente pattern background */
 .kente-pattern {
-  background-image: 
+  background-image:
     repeating-linear-gradient(
       90deg,
       transparent,
@@ -188,7 +226,11 @@ html {
 
 /* Dot grid pattern */
 .dot-grid {
-  background-image: radial-gradient(circle, rgba(201, 162, 39, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(
+    circle,
+    rgba(201, 162, 39, 0.15) 1px,
+    transparent 1px
+  );
   background-size: 24px 24px;
 }
 

@@ -14,8 +14,7 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isTransparentHomeHeader =
-    pathname === "/" && !isScrolled && !isMobileMenuOpen;
+  const primaryLinks = navLinks.filter((link) => link.href !== "/contact");
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -62,85 +61,67 @@ export function Navigation() {
           opacity: isVisible || isMobileMenuOpen ? 1 : 0,
         }}
         transition={{ duration: 0.28, ease: "easeOut" }}
-        className="fixed inset-x-0 top-4 z-50 px-4 lg:top-6 lg:px-8 container mx-auto"
+        className="fixed inset-x-0 top-4 z-50 px-4 lg:top-6 lg:px-8"
       >
-        <div
-          className={cn(
-            "w-full rounded-[28px] border transition-all duration-300",
-            isTransparentHomeHeader
-              ? "border-transparent bg-transparent shadow-none backdrop-blur-0"
-              : "border-forest-green/10 bg-white/90 shadow-[0_20px_55px_rgba(13,31,20,0.18)] backdrop-blur-xl",
-          )}
-        >
-          <nav
-            className={cn(
-              "flex items-center justify-between px-5 lg:px-7 transition-all duration-300",
-              isScrolled ? "py-3" : "py-4",
-            )}
-          >
-            <Link href="/" aria-label="Go to homepage">
-              <Logo
-                size={isScrolled ? "sm" : "md"}
-                variant={isTransparentHomeHeader ? "light" : "dark"}
-              />
-            </Link>
-
-            <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => {
-                const isActive = isActiveLink(link.href);
-
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "group relative font-medium transition-colors",
-                      isActive
-                        ? "text-gold"
-                        : isTransparentHomeHeader
-                          ? "text-cream hover:text-gold"
-                          : "text-forest-green hover:text-gold",
-                    )}
-                  >
-                    {link.label}
-                    <span
-                      className={cn(
-                        "absolute -bottom-1 left-0 h-0.5 bg-gold transition-all duration-300",
-                        isActive ? "w-full" : "w-0 group-hover:w-full",
-                      )}
-                    />
-                  </Link>
-                );
-              })}
-              <Link
-                href="/contact"
-                className={cn(
-                  "rounded-full px-6 py-2.5 font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105",
-                  pathname === "/contact" && !isTransparentHomeHeader
-                    ? "bg-forest-green text-cream"
-                    : isTransparentHomeHeader
-                      ? "border border-cream/35 bg-cream/10 text-cream hover:bg-cream/18"
-                      : "bg-gold hover:bg-gold-dark text-charcoal",
-                )}
-              >
-                Contact Us
-              </Link>
-            </div>
-
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
+        <div className="mx-auto max-w-6xl">
+          <div className="w-full rounded-[30px] border border-white/18 bg-forest-green/12 shadow-[0_14px_36px_rgba(13,31,20,0.12)] backdrop-blur-md transition-all duration-300">
+            <nav
               className={cn(
-                "md:hidden p-2 transition-colors",
-                isTransparentHomeHeader
-                  ? "text-cream hover:text-gold"
-                  : "text-forest-green hover:text-gold",
+                "flex items-center gap-4 px-4 lg:px-6 transition-all duration-300",
+                isScrolled ? "py-3" : "py-4",
               )}
-              aria-label="Open menu"
-              aria-expanded={isMobileMenuOpen}
             >
-              <Menu className="w-6 h-6" />
-            </button>
-          </nav>
+              <Link href="/" aria-label="Go to homepage" className="shrink-0">
+                <Logo size={isScrolled ? "sm" : "md"} variant="light" />
+              </Link>
+
+              <div className="hidden min-w-0 flex-1 items-center md:grid md:grid-cols-[minmax(0,1fr)_auto] md:gap-6">
+                <div className="flex items-center justify-evenly">
+                  {primaryLinks.map((link) => {
+                    const isActive = isActiveLink(link.href);
+
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                          "group relative px-2 py-2 text-lg font-bold tracking-[0.015em] text-white drop-shadow-[0_3px_16px_rgba(13,31,20,0.78)] transition-colors duration-300 lg:text-[1.18rem]",
+                          isActive ? "text-[#ffe38f]" : "hover:text-[#fff1bf]",
+                        )}
+                      >
+                        {link.label}
+                        <span
+                          className={cn(
+                            "absolute -bottom-1 left-2 right-2 h-1 rounded-full bg-[#ffd66b] shadow-[0_0_16px_rgba(255,214,107,0.9)] transition-all duration-300",
+                            isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                          )}
+                        />
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <Link
+                  href="/contact"
+                  className={cn(
+                    "rounded-full border border-cream/55 bg-cream/12 px-6 py-3 text-lg font-bold text-white shadow-[0_12px_30px_rgba(13,31,20,0.2)] backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:border-gold hover:bg-cream/20 hover:text-[#fff1bf] lg:text-[1.08rem]",
+                    pathname === "/contact" ? "border-gold text-[#fff1bf]" : "",
+                  )}
+                >
+                  Contact Us
+                </Link>
+              </div>
+
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="ml-auto p-2 text-cream transition-colors hover:text-gold md:hidden"
+                aria-label="Open menu"
+                aria-expanded={isMobileMenuOpen}
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+            </nav>
+          </div>
         </div>
       </motion.header>
 
@@ -168,7 +149,7 @@ export function Navigation() {
               </div>
 
               <nav className="flex-1 flex flex-col items-center justify-center gap-6">
-                {navLinks.map((link, index) => (
+                {primaryLinks.map((link, index) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, y: 20 }}
@@ -192,7 +173,7 @@ export function Navigation() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: navLinks.length * 0.1 }}
+                  transition={{ delay: primaryLinks.length * 0.1 }}
                   className="mt-8"
                 >
                   <Link

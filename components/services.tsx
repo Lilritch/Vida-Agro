@@ -4,6 +4,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { Shield, Leaf, Bug, Heart, BookOpen, Truck } from "lucide-react"
 import { servicesGallery } from "@/lib/site-config"
+import { CropDiagnosticTool } from "@/components/crop-diagnostic-tool"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -150,6 +151,17 @@ export function Services() {
             </motion.div>
           ))}
         </motion.div>
+
+        <div className="mt-16 lg:mt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 26 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <CropDiagnosticTool />
+          </motion.div>
+        </div>
       </div>
     </section>
   )

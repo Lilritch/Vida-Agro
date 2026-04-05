@@ -260,16 +260,7 @@ export function Products({ collapsible = false }: ProductsProps) {
                     transition={{ duration: 0.5, delay: 0.3 }}
                     className="mt-12 text-center"
                   >
-                    <p
-                      className="mb-4 text-forest-green"
-                      style={{ opacity: 0.6 }}
-                    >
-                      Looking for our complete product range?
-                    </p>
-                    <button className="inline-flex items-center gap-2 rounded-full bg-forest-green px-6 py-3 font-semibold text-cream transition-all duration-300 hover:bg-forest-green-dark hover:shadow-lg">
-                      <Package className="h-5 w-5" />
-                      Download Product Catalogue
-                    </button>
+                    
                   </motion.div>
                 </motion.div>
               </motion.div>

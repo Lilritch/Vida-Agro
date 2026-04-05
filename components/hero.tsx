@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Pause, Play } from "lucide-react";
 import { heroMedia } from "@/lib/site-config";
+import { WeatherWidget } from "@/components/weather-widget";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -72,28 +73,46 @@ export function Hero() {
         className="relative z-10"
       >
         <div className="container mx-auto flex min-h-[78svh] items-end px-4 pb-16 pt-28 lg:px-8 lg:pb-24 lg:pt-36">
-          <div className="ml-3 max-w-[32rem] sm:ml-6 lg:ml-10">
-            <motion.h1
-              variants={fadeUp}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="max-w-[29rem] font-serif text-[2.8rem] font-bold leading-[0.96] tracking-[-0.03em] text-cream drop-shadow-[0_12px_28px_rgba(13,31,20,0.26)] sm:text-[3.35rem] lg:text-[3.9rem]"
-            >
-              Modern Inputs,
-              <span className="block text-gold">Field Confidence,</span>
-              <span className="block">Better Harvests.</span>
-            </motion.h1>
+          <div className="grid w-full items-end gap-10 lg:grid-cols-[minmax(0,34rem)_minmax(280px,340px)]">
+            <div className="ml-3 max-w-[32rem] sm:ml-6 lg:ml-10">
+              <motion.h1
+                variants={fadeUp}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="max-w-[29rem] font-serif text-[2.8rem] font-bold leading-[0.96] tracking-[-0.03em] text-cream drop-shadow-[0_12px_28px_rgba(13,31,20,0.26)] sm:text-[3.35rem] lg:text-[3.9rem]"
+              >
+                Modern Inputs,
+                <span className="block text-gold">Field Confidence,</span>
+                <span className="block">Better Harvests.</span>
+              </motion.h1>
+
+              <motion.p
+                variants={fadeUp}
+                transition={{ duration: 0.7, delay: 0.16 }}
+                className="mt-6 max-w-xl text-base leading-7 text-cream/80 sm:text-lg"
+              >
+                {heroMedia.caption}
+              </motion.p>
+
+              <motion.div
+                variants={fadeUp}
+                transition={{ duration: 0.7, delay: 0.22 }}
+                className="mt-8 flex flex-wrap gap-4"
+              >
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-forest-green shadow-[0_18px_40px_rgba(13,31,20,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-cream"
+                >
+                  Talk to Our Team
+                </Link>
+              </motion.div>
+            </div>
 
             <motion.div
               variants={fadeUp}
-              transition={{ duration: 0.7, delay: 0.18 }}
-              className="mt-8 flex flex-wrap gap-4"
+              transition={{ duration: 0.7, delay: 0.28 }}
+              className="mx-3 sm:mx-6 lg:mx-0 lg:justify-self-end"
             >
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.18em] text-forest-green shadow-[0_18px_40px_rgba(13,31,20,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-cream"
-              >
-                Talk to Our Team
-              </Link>
+              <WeatherWidget />
             </motion.div>
           </div>
         </div>
