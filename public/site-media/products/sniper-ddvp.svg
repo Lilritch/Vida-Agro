@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="600" y1="0" x2="600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0EAD8"/>
+      <stop offset=".58" stop-color="#D3D8BD"/>
+      <stop offset="1" stop-color="#2A4D39"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <path d="M0 528C135 474 270 458 449 474C635 492 777 568 1200 631V900H0V528Z" fill="#2B513C"/>
+  <path d="M0 634C178 580 347 585 547 633C725 676 894 748 1200 804V900H0V634Z" fill="#173426"/>
+  <rect x="330" y="234" width="270" height="450" rx="64" fill="#F7F3E8"/>
+  <rect x="366" y="287" width="198" height="276" rx="30" fill="#1E4331"/>
+  <rect x="405" y="150" width="120" height="112" rx="30" fill="#F7F3E8"/>
+  <rect x="429" y="173" width="72" height="68" rx="18" fill="#1E4331"/>
+  <rect x="387" y="349" width="155" height="90" rx="24" fill="#C9A227"/>
+  <rect x="416" y="458" width="107" height="83" rx="18" fill="#E8E0C8"/>
+  <path d="M794 245L888 192L980 245L958 359L888 407L817 359L794 245Z" fill="#F5F0E1"/>
+  <path d="M842 323L886 280L934 323V377H842V323Z" fill="#1A3D2E"/>
+  <path d="M875 294H903V333H875V294Z" fill="#C9A227"/>
+  <circle cx="995" cy="283" r="16" fill="#C9A227"/>
+  <circle cx="1029" cy="324" r="12" fill="#DCC57E"/>
+  <circle cx="971" cy="344" r="10" fill="#DCC57E"/>
+  <path d="M627 617C679 553 738 516 801 505" stroke="#F5F0E1" stroke-width="18" stroke-linecap="round"/>
+  <path d="M682 676C735 610 796 572 859 562" stroke="#D7B24A" stroke-width="12" stroke-linecap="round"/>
+  <path d="M865 657C917 609 977 590 1047 600" stroke="#E8E0C8" stroke-width="16" stroke-linecap="round"/>
+</svg>
