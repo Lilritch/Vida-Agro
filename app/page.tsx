@@ -11,8 +11,8 @@ export default function Home() {
       <Hero />
       <HomeImpactSection />
       <Products collapsible />
+      <CTASection blendToDark />
       <GhanaServiceMap />
-      <CTASection blendFromDark />
     </SiteShell>
   )
 }

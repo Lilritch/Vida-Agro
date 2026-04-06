@@ -40,11 +40,13 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-charcoal relative">
-      {/* Kente-inspired top border */}
-      <div className="h-2 w-full bg-gradient-to-r from-gold via-forest-green to-gold" />
+    <footer className="relative overflow-hidden bg-[linear-gradient(180deg,#08130d_0%,#06100b_100%)]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(8,19,13,0.98)_0%,rgba(8,19,13,0.82)_24%,transparent_100%)]"
+      />
       
-      <div className="container mx-auto px-4 lg:px-8 py-16">
+      <div className="container relative z-10 mx-auto px-4 py-16 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Logo & Tagline */}
           <div className="lg:col-span-1">
@@ -150,8 +152,8 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div style={{ borderTop: '1px solid rgba(245, 240, 225, 0.1)' }}>
-        <div className="container mx-auto px-4 lg:px-8 py-6">
+      <div className="relative z-10">
+        <div className="container mx-auto px-4 py-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-cream text-sm text-center sm:text-left" style={{ opacity: 0.4 }}>
               &copy; {currentYear} Vida Asamoah Agrochemicals & Vector Control Limited. All rights reserved.

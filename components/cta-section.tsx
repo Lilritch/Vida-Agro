@@ -11,23 +11,41 @@ const fadeUp = {
 
 interface CTASectionProps {
   blendFromDark?: boolean;
+  blendToDark?: boolean;
 }
 
-export function CTASection({ blendFromDark = false }: CTASectionProps) {
+export function CTASection({
+  blendFromDark = false,
+  blendToDark = false,
+}: CTASectionProps) {
+  const useWhiteContent = blendFromDark || blendToDark;
+
   return (
     <section
       data-aos="fade-up"
       className={`relative overflow-hidden ${
         blendFromDark
-          ? "bg-[linear-gradient(180deg,#173626_0%,#1a3d2e_16%,#1f4634_44%,#224d39_68%,#f5f0e1_100%)] py-20 lg:py-32"
+          ? "bg-[linear-gradient(180deg,#08110c_0%,#0d1f14_12%,#143526_36%,#1b4330_58%,#123120_78%,#08130d_100%)] py-20 lg:py-32"
+          : blendToDark
+            ? "bg-[linear-gradient(180deg,#1e4b37_0%,#1a4331_24%,#153526_48%,#0f261a_72%,#08110c_100%)] py-20 lg:py-32"
           : "bg-gradient-to-br from-forest-green via-forest-green to-forest-green-dark py-20 lg:py-32"
       }`}
     >
-      {blendFromDark ? (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#173626] to-transparent"
-        />
+      {blendFromDark || blendToDark ? (
+        <>
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-x-0 top-0 h-36 ${
+              blendToDark
+                ? "bg-[linear-gradient(180deg,#ffffff_0%,rgba(255,255,255,0.96)_8%,rgba(245,240,225,0.62)_18%,transparent_72%)]"
+                : "bg-[linear-gradient(180deg,#08110c_0%,rgba(8,17,12,0.92)_14%,rgba(8,17,12,0.56)_34%,transparent_72%)]"
+            }`}
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(0deg,#08130d_0%,rgba(8,19,13,0.94)_20%,rgba(8,19,13,0.48)_46%,transparent_78%)]"
+          />
+        </>
       ) : null}
 
       {/* Background decorations */}
@@ -48,26 +66,34 @@ export function CTASection({ blendFromDark = false }: CTASectionProps) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className={`mx-auto max-w-3xl text-center ${blendFromDark ? "lg:-mt-4" : ""}`}
+          className={`mx-auto max-w-3xl text-center ${
+            blendFromDark || blendToDark ? "lg:-mt-4" : ""
+          }`}
         >
           <motion.span
             variants={fadeUp}
-            className="inline-block text-gold font-semibold tracking-wider uppercase text-sm mb-4"
+            className={`mb-4 inline-block text-sm font-semibold uppercase tracking-wider ${
+              useWhiteContent ? "text-white/82" : "text-gold"
+            }`}
           >
             Ready to Transform Your Farm?
           </motion.span>
 
           <motion.h2
             variants={fadeUp}
-            className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-cream mb-6"
+            className={`mb-6 font-serif text-3xl font-bold sm:text-4xl lg:text-5xl ${
+              useWhiteContent ? "text-white" : "text-cream"
+            }`}
           >
             Let&apos;s Grow Your Success Together
           </motion.h2>
 
           <motion.p
             variants={fadeUp}
-            className="text-cream text-lg mb-10 leading-relaxed"
-            style={{ opacity: 0.7 }}
+            className={`mb-10 text-lg leading-relaxed ${
+              useWhiteContent ? "text-white/80" : "text-cream"
+            }`}
+            style={useWhiteContent ? undefined : { opacity: 0.7 }}
           >
             Whether you&apos;re a smallholder farmer in Ashanti Region or
             managing a commercial operation, we have the products and expertise
@@ -80,10 +106,14 @@ export function CTASection({ blendFromDark = false }: CTASectionProps) {
           >
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-charcoal font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-xl hover:scale-105"
+              className={`group inline-flex items-center gap-2 rounded-full px-8 py-4 font-semibold transition-all duration-300 hover:scale-105 ${
+                useWhiteContent
+                  ? "border border-white/20 bg-white/8 text-white hover:bg-white/14 hover:shadow-[0_18px_44px_rgba(255,255,255,0.08)]"
+                  : "bg-gold text-charcoal hover:bg-gold-dark hover:shadow-xl"
+              }`}
             >
               Talk to an Expert
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>{" "}
           </motion.div>
         </motion.div>
