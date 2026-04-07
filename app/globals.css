@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Outfit:wght@300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Outfit:wght@300;400;500&family=Playfair+Display:wght@700;800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -241,4 +241,145 @@ html {
 
 .animate-float-delayed {
   animation: float 6s ease-in-out 2s infinite;
+}
+
+.focus-areas-section {
+  overflow: hidden;
+}
+
+.focus-areas-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: 60px;
+  overflow: visible;
+}
+
+.focus-areas-strip {
+  display: flex;
+  width: max-content;
+  overflow: visible;
+}
+
+.focus-area-card {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 280px;
+  width: 280px;
+  height: 460px;
+  transition: all 0.35s ease;
+}
+
+.focus-area-card:hover {
+  transform: scale(1.04);
+  z-index: 5;
+}
+
+.focus-area-card + .focus-area-card {
+  margin-left: -24px;
+}
+
+.focus-area-card-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 22px 46px rgba(13, 31, 20, 0.14);
+  transform: skewX(-12deg);
+  transform-origin: center;
+}
+
+.focus-area-card-image {
+  position: absolute;
+  inset: 0;
+  left: -16%;
+  width: 132%;
+  height: 100%;
+  object-fit: cover;
+  transform: skewX(12deg) scale(1.04);
+  transform-origin: center;
+  transition: all 0.35s ease;
+}
+
+.focus-area-card-overlay {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+  transform: skewX(12deg) scaleX(1.08);
+  transform-origin: bottom center;
+  transition: all 0.35s ease;
+}
+
+.focus-area-card-content {
+  position: absolute;
+  right: 1.35rem;
+  bottom: 1.35rem;
+  left: 1.35rem;
+  z-index: 1;
+  transform: skewX(12deg);
+  transform-origin: bottom left;
+}
+
+.focus-area-card-title {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.focus-area-card:hover .focus-area-card-overlay,
+.focus-area-card:focus-within .focus-area-card-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, transparent 100%);
+}
+
+.focus-area-card:hover .focus-area-card-image,
+.focus-area-card:focus-within .focus-area-card-image {
+  transform: skewX(12deg) scale(1.08);
+  filter: brightness(1.1);
+}
+
+@media (min-width: 768px) {
+  .focus-areas-strip {
+    padding-right: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .focus-areas-bleed {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .focus-areas-strip {
+    width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .focus-area-card,
+  .focus-area-card + .focus-area-card {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .focus-area-card {
+    height: 24rem;
+  }
+
+  .focus-area-card-shell,
+  .focus-area-card-image,
+  .focus-area-card-overlay,
+  .focus-area-card-content {
+    transform: none;
+  }
+
+  .focus-area-card-image {
+    left: 0;
+    width: 100%;
+  }
 }
