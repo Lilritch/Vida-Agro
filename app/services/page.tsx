@@ -1,4 +1,5 @@
 import { CTASection } from "@/components/cta-section"
+import { FocusAreas } from "@/components/focus-areas"
 import { PageHero } from "@/components/page-hero"
 import { Services } from "@/components/services"
 import { SiteShell } from "@/components/site-shell"
@@ -12,6 +13,7 @@ export default function ServicesPage() {
         description="Explore the crop protection, soil fertility, public health, advisory, and delivery services we provide across Ghana."
       />
       <Services />
+      <FocusAreas />
       <CTASection />
     </SiteShell>
   )

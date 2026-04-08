@@ -1,4 +1,5 @@
 import { Contact } from "@/components/contact"
+import { FocusAreas } from "@/components/focus-areas"
 import { MapStrip } from "@/components/map-strip"
 import { PageHero } from "@/components/page-hero"
 import { SiteShell } from "@/components/site-shell"
@@ -12,6 +13,7 @@ export default function ContactPage() {
         description="Reach out for product enquiries, agronomic advice, vector control support, or bulk supply discussions."
       />
       <Contact />
+      <FocusAreas />
       <MapStrip />
     </SiteShell>
   )

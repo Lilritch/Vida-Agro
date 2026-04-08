@@ -1,4 +1,5 @@
 import { CTASection } from "@/components/cta-section"
+import { FocusAreas } from "@/components/focus-areas"
 import { PageHero } from "@/components/page-hero"
 import { SiteShell } from "@/components/site-shell"
 import { Testimonials } from "@/components/testimonials"
@@ -13,6 +14,7 @@ export default function WhyUsPage() {
         description="See what makes our team, products, and local support network a dependable choice for farmers and institutions."
       />
       <WhyUs />
+      <FocusAreas />
       <Testimonials />
       <CTASection />
     </SiteShell>

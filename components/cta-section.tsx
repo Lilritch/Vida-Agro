@@ -28,7 +28,7 @@ export function CTASection({
           ? "bg-[linear-gradient(180deg,#08110c_0%,#0d1f14_12%,#143526_36%,#1b4330_58%,#123120_78%,#08130d_100%)] py-20 lg:py-32"
           : blendToDark
             ? "bg-[linear-gradient(180deg,#1e4b37_0%,#1a4331_24%,#153526_48%,#0f261a_72%,#08110c_100%)] py-20 lg:py-32"
-          : "bg-gradient-to-br from-forest-green via-forest-green to-forest-green-dark py-20 lg:py-32"
+          : "bg-[linear-gradient(180deg,#ffffff_0%,#fbfaf5_42%,#f3ecdb_100%)] py-20 lg:py-32"
       }`}
     >
       {blendFromDark || blendToDark ? (
@@ -82,7 +82,7 @@ export function CTASection({
           <motion.h2
             variants={fadeUp}
             className={`mb-6 font-serif text-3xl font-bold sm:text-4xl lg:text-5xl ${
-              useWhiteContent ? "text-white" : "text-cream"
+              useWhiteContent ? "text-white" : "text-forest-green"
             }`}
           >
             Let&apos;s Grow Your Success Together
@@ -91,9 +91,8 @@ export function CTASection({
           <motion.p
             variants={fadeUp}
             className={`mb-10 text-lg leading-relaxed ${
-              useWhiteContent ? "text-white/80" : "text-cream"
+              useWhiteContent ? "text-white/80" : "text-forest-green/75"
             }`}
-            style={useWhiteContent ? undefined : { opacity: 0.7 }}
           >
             Whether you&apos;re a smallholder farmer in Ashanti Region or
             managing a commercial operation, we have the products and expertise
@@ -109,7 +108,7 @@ export function CTASection({
               className={`group inline-flex items-center gap-2 rounded-full px-8 py-4 font-semibold transition-all duration-300 hover:scale-105 ${
                 useWhiteContent
                   ? "border border-white/20 bg-white/8 text-white hover:bg-white/14 hover:shadow-[0_18px_44px_rgba(255,255,255,0.08)]"
-                  : "bg-gold text-charcoal hover:bg-gold-dark hover:shadow-xl"
+                  : "bg-forest-green text-white hover:bg-forest-green-dark hover:shadow-[0_18px_44px_rgba(13,31,20,0.14)]"
               }`}
             >
               Talk to an Expert
