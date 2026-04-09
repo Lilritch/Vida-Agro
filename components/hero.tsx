@@ -71,16 +71,16 @@ export function Hero() {
         transition={{ duration: 0.7 }}
         className="relative z-10"
       >
-        <div className="container mx-auto flex min-h-[78svh] items-end px-4 pb-16 pt-28 lg:px-8 lg:pb-24 lg:pt-36">
+        <div className="mx-auto flex min-h-[78svh] max-w-6xl items-end px-4 pb-14 pt-32 sm:px-6 sm:pb-16 sm:pt-36 lg:min-h-[82svh] lg:px-8 lg:pb-20 lg:pt-40">
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.7, delay: 0.05 }}
-            className="ml-3 max-w-[32rem] sm:ml-6 lg:ml-10"
+            className="max-w-[29rem] sm:max-w-[32rem] lg:max-w-[34rem]"
           >
             <motion.h1
               variants={fadeUp}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="max-w-[29rem] font-serif text-[2.8rem] font-bold leading-[0.96] tracking-[-0.03em] text-cream drop-shadow-[0_12px_28px_rgba(13,31,20,0.26)] sm:text-[3.35rem] lg:text-[3.9rem]"
+              className="max-w-[27rem] font-serif text-[2.35rem] font-bold leading-[0.98] tracking-[-0.03em] text-cream drop-shadow-[0_12px_28px_rgba(13,31,20,0.26)] sm:max-w-[29rem] sm:text-[2.95rem] lg:max-w-[31rem] lg:text-[3.45rem]"
             >
               Modern Inputs,
               <span className="block text-gold">Field Confidence,</span>
@@ -90,7 +90,7 @@ export function Hero() {
             <motion.p
               variants={fadeUp}
               transition={{ duration: 0.7, delay: 0.16 }}
-              className="mt-6 max-w-xl text-base leading-7 text-cream/80 sm:text-lg"
+              className="mt-5 max-w-xl text-[0.95rem] leading-7 text-cream/80 sm:text-base"
             >
               {heroMedia.caption}
             </motion.p>

@@ -40,10 +40,10 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="relative overflow-hidden bg-[linear-gradient(180deg,#08130d_0%,#06100b_100%)]">
+    <footer className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,#06100b_0%,#06100b_18%,#050e0a_100%)]">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(8,19,13,0.98)_0%,rgba(8,19,13,0.82)_24%,transparent_100%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(6,16,11,0.94)_0%,rgba(6,16,11,0.64)_32%,transparent_100%)]"
       />
       
       <div className="container relative z-10 mx-auto px-4 py-16 lg:px-8">

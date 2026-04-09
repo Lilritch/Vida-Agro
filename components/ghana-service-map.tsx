@@ -1,23 +1,22 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ghanaBoundary from "@/data/ghana-country.geo.json";
 
+const COUNTRY_TOPOLOGY_URL =
+  "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 const SECTION_BG_GRADIENT =
-  "radial-gradient(circle at 24% 54%, rgba(10, 55, 27, 0.72) 0%, rgba(14,35,22,0.55) 22%, rgba(7,15,10,0) 44%), radial-gradient(circle at 72% 18%, rgba(18,34,52,0.22) 0%, rgba(6,12,10,0) 34%), linear-gradient(180deg, #08110c 0%, #050c08 48%, #030705 100%)";
+  "radial-gradient(circle at 18% 42%, rgba(0, 255, 136, 0.12) 0%, rgba(0, 255, 136, 0.04) 16%, rgba(0, 0, 0, 0) 34%), radial-gradient(circle at 84% 24%, rgba(255, 215, 0, 0.08) 0%, rgba(255, 215, 0, 0.02) 18%, rgba(0, 0, 0, 0) 38%), linear-gradient(180deg, #07140a 0%, #0a1f0f 34%, #08130d 76%, #06100b 100%)";
 const EDGE_FADE_MASK =
-  "radial-gradient(ellipse 70% 90% at 50% 50%, black 50%, transparent 100%)";
+  "radial-gradient(ellipse 70% 90% at 50% 50%, black 54%, transparent 100%)";
 const TOP_BLEND_GRADIENT =
-  "linear-gradient(180deg, rgb(1, 16, 8) 0%, rgba(8,19,13,0.96) 12%, rgba(10,22,16,0.78) 24%, rgba(9,18,13,0.42) 42%, rgba(8,17,12,0) 72%)";
+  "linear-gradient(180deg, rgba(4,11,6,1) 0%, rgba(4,11,6,0.94) 18%, rgba(4,11,6,0.62) 42%, rgba(4,11,6,0) 100%)";
 const BOTTOM_BLEND_GRADIENT =
-  "linear-gradient(0deg, rgba(8,19,13,1) 0%, rgba(8,19,13,0.96) 10%, rgba(8,19,13,0.72) 22%, rgba(8,19,13,0.28) 38%, rgba(8,19,13,0) 66%)";
-const STARFIELD_PATTERN =
-  "radial-gradient(circle, rgba(255,255,255,0.9) 0 1px, transparent 1.7px), radial-gradient(circle, rgba(136, 137, 138, 0.78) 0 1.1px, transparent 1.8px), radial-gradient(circle, rgba(232,184,75,0.55) 0 0.9px, transparent 1.7px)";
+  "linear-gradient(0deg, rgba(6,16,11,1) 0%, rgba(6,16,11,0.98) 18%, rgba(6,16,11,0.74) 42%, rgba(6,16,11,0) 100%)";
 const STAR_GLOW_PATTERN =
-  "radial-gradient(circle at 14% 24%, rgba(255,255,255,0.16) 0%, transparent 9%), radial-gradient(circle at 28% 66%, rgba(178,214,255,0.14) 0%, transparent 8%), radial-gradient(circle at 52% 18%, rgba(255,255,255,0.16) 0%, transparent 7%), radial-gradient(circle at 74% 34%, rgba(232,184,75,0.1) 0%, transparent 8%), radial-gradient(circle at 88% 72%, rgba(255,255,255,0.14) 0%, transparent 10%)";
-const GHANA_FOREST = "#1a4a2e";
-const ACTIVE_REGION_GREEN = "#15583d";
-const GOLD = "#e8b84b";
+  "radial-gradient(circle at 12% 18%, rgba(255,255,255,0.08) 0%, transparent 8%), radial-gradient(circle at 76% 26%, rgba(0,255,136,0.08) 0%, transparent 10%), radial-gradient(circle at 62% 72%, rgba(255,215,0,0.06) 0%, transparent 9%), radial-gradient(circle at 88% 58%, rgba(255,255,255,0.05) 0%, transparent 8%)";
+
 const SURFACE_EARTH_TEXTURE =
   "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg";
 const TOPOLOGY_TEXTURE =
@@ -25,102 +24,562 @@ const TOPOLOGY_TEXTURE =
 const CITY_LIGHTS_TEXTURE =
   "https://unpkg.com/three-globe/example/img/earth-night.jpg";
 
-type Marker = {
+const GLOBE_RADIUS = 100;
+const GHANA_TARGET = { lat: 7.9, lng: -1.0, altitude: 1.7 };
+const INITIAL_POINT_OF_VIEW = { lat: 18, lng: 20, altitude: 2.2 };
+const HOVER_COLOR = "#00ff88";
+const GHANA_COLOR = "#ffd700";
+const DEFAULT_COUNTRY_STROKE = "rgba(0, 255, 136, 0.15)";
+const GHANA_STROKE = "rgba(255, 215, 0, 0.9)";
+const HOVER_STROKE = "rgba(0, 255, 136, 0.96)";
+const RAYCAST_INTERVAL_MS = 16;
+const GHANA_FOCUS_DELAY_MS = 2000;
+const GHANA_FOCUS_DURATION_MS = 2200;
+const GHANA_PULSE_DURATION_MS = 2000;
+
+const mediaHubItems = [
+  {
+    title: "Field Activity",
+    tag: "On-site support",
+    src: "/site-media/hero/hero-pexels-4975354.jpeg",
+    alt: "Field activity preview",
+    baseClassName:
+      "z-30 -rotate-[5deg] translate-x-0 translate-y-10 group-hover:-translate-x-10 group-hover:translate-y-0 group-hover:-rotate-[10deg]",
+  },
+  {
+    title: "Product Shelf",
+    tag: "Ready inventory",
+    src: "/site-media/products/kabaplus.jpg",
+    alt: "Product inventory preview",
+    baseClassName:
+      "z-20 rotate-[1deg] translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:-translate-y-10 group-hover:rotate-[2deg]",
+  },
+  {
+    title: "Crop Care",
+    tag: "Trusted inputs",
+    src: "/site-media/products/wuxal.jpg",
+    alt: "Crop care product preview",
+    baseClassName:
+      "z-10 rotate-[7deg] translate-x-8 translate-y-0 group-hover:translate-x-14 group-hover:translate-y-12 group-hover:rotate-[11deg]",
+  },
+] as const;
+
+type LngLat = [number, number];
+
+type CountryTooltip = {
   name: string;
-  lat: number;
-  lng: number;
-  kind: "hq" | "served";
-  altitude: number;
-  size: number;
+  x: number;
+  y: number;
 };
 
-type RouteArc = {
-  startLat: number;
-  startLng: number;
-  endLat: number;
-  endLng: number;
+type TopologyTransform = {
+  scale: [number, number];
+  translate: [number, number];
+};
+
+type TopologyPolygonGeometry = {
+  type: "Polygon";
+  id?: string;
+  properties?: { name?: string };
+  arcs: number[][];
+};
+
+type TopologyMultiPolygonGeometry = {
+  type: "MultiPolygon";
+  id?: string;
+  properties?: { name?: string };
+  arcs: number[][][];
+};
+
+type CountryTopology = {
+  type: "Topology";
+  transform: TopologyTransform;
+  arcs: [number, number][][];
+  objects: {
+    countries: {
+      type: "GeometryCollection";
+      geometries: Array<TopologyPolygonGeometry | TopologyMultiPolygonGeometry>;
+    };
+  };
+};
+
+type CountryGeometry =
+  | {
+      type: "Polygon";
+      coordinates: LngLat[][];
+    }
+  | {
+      type: "MultiPolygon";
+      coordinates: LngLat[][][];
+    };
+
+type CountryFeature = {
+  type: "Feature";
+  id?: string;
+  properties: {
+    name: string;
+  };
+  geometry: CountryGeometry;
+};
+
+type PreparedPolygon = {
+  rings: LngLat[][];
+  minLat: number;
+  maxLat: number;
+};
+
+type PreparedCountry = {
+  id: string;
   name: string;
+  feature: CountryFeature;
+  polygons: PreparedPolygon[];
+  minLat: number;
+  maxLat: number;
+  isGhana: boolean;
 };
 
-const kumasiMarker: Marker = {
-  name: "Kumasi — Our HQ",
-  lat: 6.6885,
-  lng: -1.6233,
-  kind: "hq",
-  altitude: 0.03,
-  size: 0.8,
+type CountryMaterials = {
+  defaultCap: any;
+  defaultSide: any;
+  hoverCap: any;
+  hoverSide: any;
+  ghanaCap: any;
+  ghanaSide: any;
 };
 
-const servedRegionMarkers: Marker[] = [
-  {
-    name: "Ashanti",
-    lat: 6.9,
-    lng: -1.5,
-    kind: "served",
-    altitude: 0.015,
-    size: 0.3,
-  },
-  {
-    name: "Ahafo",
-    lat: 7.1,
-    lng: -2.45,
-    kind: "served",
-    altitude: 0.015,
-    size: 0.3,
-  },
-  {
-    name: "Bono East",
-    lat: 7.75,
-    lng: -1.1,
-    kind: "served",
-    altitude: 0.015,
-    size: 0.3,
-  },
-  {
-    name: "Central",
-    lat: 5.5,
-    lng: -1.05,
-    kind: "served",
-    altitude: 0.015,
-    size: 0.3,
-  },
-  {
-    name: "Eastern",
-    lat: 6.45,
-    lng: -0.55,
-    kind: "served",
-    altitude: 0.015,
-    size: 0.3,
-  },
-  {
-    name: "Western North",
-    lat: 6.85,
-    lng: -2.5,
-    kind: "served",
-    altitude: 0.015,
-    size: 0.3,
-  },
-];
+type PointerState = {
+  active: boolean;
+  clientX: number;
+  clientY: number;
+};
 
-const initialMarkers = [kumasiMarker, ...servedRegionMarkers];
+const fallbackGhanaFeature: CountryFeature = {
+  type: "Feature",
+  id: "Ghana",
+  properties: {
+    name: "Ghana",
+  },
+  geometry:
+    ghanaBoundary.features[0].geometry.type === "Polygon"
+      ? {
+          type: "Polygon",
+          coordinates: ghanaBoundary.features[0].geometry.coordinates as LngLat[][],
+        }
+      : {
+          type: "MultiPolygon",
+          coordinates: ghanaBoundary.features[0].geometry.coordinates as unknown as LngLat[][][],
+        },
+};
 
-const routeArcs: RouteArc[] = servedRegionMarkers.map((region) => ({
-  startLat: kumasiMarker.lat,
-  startLng: kumasiMarker.lng,
-  endLat: region.lat,
-  endLng: region.lng,
-  name: `${region.name} route`,
-}));
+function decodeArc(
+  arc: [number, number][],
+  transform: TopologyTransform,
+): LngLat[] {
+  let x = 0;
+  let y = 0;
 
-const ghanaPointOfView = { lat: 7.9465, lng: -1.0232, altitude: 1.5 };
+  return arc.map(([dx, dy]) => {
+    x += dx;
+    y += dy;
+
+    return [
+      transform.translate[0] + x * transform.scale[0],
+      transform.translate[1] + y * transform.scale[1],
+    ];
+  });
+}
+
+function getArcPoints(arcIndex: number, decodedArcs: LngLat[][]): LngLat[] {
+  const index = arcIndex >= 0 ? arcIndex : ~arcIndex;
+  const arc = decodedArcs[index] ?? [];
+  return arcIndex >= 0 ? arc : [...arc].reverse();
+}
+
+function closeRing(points: LngLat[]): LngLat[] {
+  if (points.length === 0) {
+    return points;
+  }
+
+  const [firstLng, firstLat] = points[0];
+  const [lastLng, lastLat] = points[points.length - 1];
+
+  if (firstLng === lastLng && firstLat === lastLat) {
+    return points;
+  }
+
+  return [...points, points[0]];
+}
+
+function stitchRing(arcIndices: number[], decodedArcs: LngLat[][]): LngLat[] {
+  const points = arcIndices.reduce<LngLat[]>((allPoints, arcIndex, index) => {
+    const arcPoints = getArcPoints(arcIndex, decodedArcs);
+
+    if (arcPoints.length === 0) {
+      return allPoints;
+    }
+
+    if (index === 0) {
+      return [...arcPoints];
+    }
+
+    return allPoints.concat(arcPoints.slice(1));
+  }, []);
+
+  return closeRing(points);
+}
+
+function topologyToCountries(topology: CountryTopology): CountryFeature[] {
+  const decodedArcs = topology.arcs.map((arc) => decodeArc(arc, topology.transform));
+
+  return topology.objects.countries.geometries.map((geometry) => {
+    const name = geometry.properties?.name ?? geometry.id ?? "Unknown";
+
+    if (geometry.type === "Polygon") {
+      return {
+        type: "Feature",
+        id: geometry.id,
+        properties: { name },
+        geometry: {
+          type: "Polygon",
+          coordinates: geometry.arcs.map((ring) => stitchRing(ring, decodedArcs)),
+        },
+      };
+    }
+
+    return {
+      type: "Feature",
+      id: geometry.id,
+      properties: { name },
+      geometry: {
+        type: "MultiPolygon",
+        coordinates: geometry.arcs.map((polygon) =>
+          polygon.map((ring) => stitchRing(ring, decodedArcs)),
+        ),
+      },
+    };
+  });
+}
+
+function prepareCountry(feature: CountryFeature): PreparedCountry {
+  const polygons =
+    feature.geometry.type === "Polygon"
+      ? [feature.geometry.coordinates]
+      : feature.geometry.coordinates;
+
+  let minLat = Infinity;
+  let maxLat = -Infinity;
+
+  const preparedPolygons = polygons.map((rings) => {
+    let polygonMinLat = Infinity;
+    let polygonMaxLat = -Infinity;
+
+    rings.forEach((ring) => {
+      ring.forEach(([, lat]) => {
+        polygonMinLat = Math.min(polygonMinLat, lat);
+        polygonMaxLat = Math.max(polygonMaxLat, lat);
+      });
+    });
+
+    minLat = Math.min(minLat, polygonMinLat);
+    maxLat = Math.max(maxLat, polygonMaxLat);
+
+    return {
+      rings,
+      minLat: polygonMinLat,
+      maxLat: polygonMaxLat,
+    };
+  });
+
+  return {
+    id: String(feature.id ?? feature.properties.name),
+    name: feature.properties.name,
+    feature,
+    polygons: preparedPolygons,
+    minLat,
+    maxLat,
+    isGhana: feature.properties.name === "Ghana",
+  };
+}
+
+function normalizeLongitudeAround(referenceLng: number, lng: number): number {
+  let normalizedLng = lng;
+
+  while (normalizedLng - referenceLng > 180) {
+    normalizedLng -= 360;
+  }
+
+  while (normalizedLng - referenceLng < -180) {
+    normalizedLng += 360;
+  }
+
+  return normalizedLng;
+}
+
+function isPointOnSegment(
+  px: number,
+  py: number,
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+): boolean {
+  const epsilon = 1e-7;
+  const crossProduct = (px - ax) * (by - ay) - (py - ay) * (bx - ax);
+
+  if (Math.abs(crossProduct) > epsilon) {
+    return false;
+  }
+
+  const dotProduct = (px - ax) * (bx - ax) + (py - ay) * (by - ay);
+
+  if (dotProduct < -epsilon) {
+    return false;
+  }
+
+  const segmentLengthSquared = (bx - ax) ** 2 + (by - ay) ** 2;
+
+  return dotProduct - segmentLengthSquared <= epsilon;
+}
+
+function isPointInRing(lng: number, lat: number, ring: LngLat[]): boolean {
+  let inside = false;
+
+  for (let index = 0, previousIndex = ring.length - 1; index < ring.length; previousIndex = index++) {
+    const [rawX1, y1] = ring[index];
+    const [rawX2, y2] = ring[previousIndex];
+    const x1 = normalizeLongitudeAround(lng, rawX1);
+    const x2 = normalizeLongitudeAround(lng, rawX2);
+
+    if (isPointOnSegment(lng, lat, x1, y1, x2, y2)) {
+      return true;
+    }
+
+    const crossesLatitude = y1 > lat !== y2 > lat;
+
+    if (!crossesLatitude) {
+      continue;
+    }
+
+    const intersectionX = x1 + ((lat - y1) * (x2 - x1)) / (y2 - y1);
+
+    if (lng < intersectionX) {
+      inside = !inside;
+    }
+  }
+
+  return inside;
+}
+
+function isPointInPreparedPolygon(
+  countryPolygon: PreparedPolygon,
+  lat: number,
+  lng: number,
+): boolean {
+  if (lat < countryPolygon.minLat || lat > countryPolygon.maxLat) {
+    return false;
+  }
+
+  const [outerRing, ...holes] = countryPolygon.rings;
+
+  if (!outerRing || !isPointInRing(lng, lat, outerRing)) {
+    return false;
+  }
+
+  return !holes.some((hole) => isPointInRing(lng, lat, hole));
+}
+
+function findCountryAtLatLng(
+  countries: PreparedCountry[],
+  lat: number,
+  lng: number,
+): PreparedCountry | null {
+  for (const country of countries) {
+    if (lat < country.minLat || lat > country.maxLat) {
+      continue;
+    }
+
+    if (country.polygons.some((polygon) => isPointInPreparedPolygon(polygon, lat, lng))) {
+      return country;
+    }
+  }
+
+  return null;
+}
+
+function createGlowSpriteTexture(THREE: any) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    return null;
+  }
+
+  const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gradient.addColorStop(0, "rgba(255, 215, 0, 1)");
+  gradient.addColorStop(0.38, "rgba(255, 215, 0, 0.65)");
+  gradient.addColorStop(0.72, "rgba(255, 215, 0, 0.18)");
+  gradient.addColorStop(1, "rgba(255, 215, 0, 0)");
+
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 128, 128);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+
+  return texture;
+}
+
+function createCountryMaterials(THREE: any): CountryMaterials {
+  return {
+    defaultCap: new THREE.MeshPhongMaterial({
+      color: "#0b2012",
+      emissive: "#082814",
+      emissiveIntensity: 0.12,
+      transparent: true,
+      opacity: 0.045,
+      shininess: 10,
+      depthWrite: false,
+    }),
+    defaultSide: new THREE.MeshPhongMaterial({
+      color: "#06160d",
+      emissive: "#041b0d",
+      emissiveIntensity: 0.08,
+      transparent: true,
+      opacity: 0.03,
+      shininess: 4,
+      depthWrite: false,
+    }),
+    hoverCap: new THREE.MeshPhongMaterial({
+      color: HOVER_COLOR,
+      emissive: HOVER_COLOR,
+      emissiveIntensity: 1.8,
+      transparent: true,
+      opacity: 0.6,
+      shininess: 120,
+      depthWrite: false,
+    }),
+    hoverSide: new THREE.MeshPhongMaterial({
+      color: HOVER_COLOR,
+      emissive: HOVER_COLOR,
+      emissiveIntensity: 1.25,
+      transparent: true,
+      opacity: 0.22,
+      shininess: 80,
+      depthWrite: false,
+    }),
+    ghanaCap: new THREE.MeshPhongMaterial({
+      color: GHANA_COLOR,
+      emissive: GHANA_COLOR,
+      emissiveIntensity: 0.95,
+      transparent: true,
+      opacity: 0.28,
+      shininess: 70,
+      depthWrite: false,
+    }),
+    ghanaSide: new THREE.MeshPhongMaterial({
+      color: GHANA_COLOR,
+      emissive: GHANA_COLOR,
+      emissiveIntensity: 0.6,
+      transparent: true,
+      opacity: 0.12,
+      shininess: 40,
+      depthWrite: false,
+    }),
+  };
+}
+
+function sphereUvToLocalPoint(THREE: any, radius: number, uv: { x: number; y: number }) {
+  const phi = uv.x * Math.PI * 2;
+  const theta = uv.y * Math.PI;
+
+  return new THREE.Vector3(
+    -Math.cos(phi) * Math.sin(theta) * radius,
+    Math.cos(theta) * radius,
+    Math.sin(phi) * Math.sin(theta) * radius,
+  );
+}
+
+function disposeMaterial(material: any) {
+  if (!material) {
+    return;
+  }
+
+  if (Array.isArray(material)) {
+    material.forEach((entry) => disposeMaterial(entry));
+    return;
+  }
+
+  Object.values(material).forEach((value) => {
+    if (
+      value &&
+      typeof value === "object" &&
+      "dispose" in value &&
+      typeof (value as { dispose?: unknown }).dispose === "function"
+    ) {
+      try {
+        (value as { dispose: () => void }).dispose();
+      } catch {
+        // Ignore disposal errors for non-texture object values.
+      }
+    }
+  });
+
+  material.dispose?.();
+}
+
+function disposeObject3D(object: any) {
+  if (!object) {
+    return;
+  }
+
+  object.traverse?.((child: any) => {
+    child.geometry?.dispose?.();
+    disposeMaterial(child.material);
+  });
+}
+
+async function loadCountries(): Promise<PreparedCountry[]> {
+  try {
+    const response = await fetch(COUNTRY_TOPOLOGY_URL);
+
+    if (!response.ok) {
+      throw new Error(`Failed to load countries: ${response.status}`);
+    }
+
+    const topology = (await response.json()) as CountryTopology;
+    return topologyToCountries(topology).map(prepareCountry);
+  } catch (error) {
+    console.error("Falling back to local Ghana boundary after country fetch failed.", error);
+    return [prepareCountry(fallbackGhanaFeature)];
+  }
+}
 
 export function GhanaServiceMap() {
   const globeContainerRef = useRef<HTMLDivElement | null>(null);
   const globeRef = useRef<any>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
-  const pulseFrameRef = useRef<number | null>(null);
-  const markersRef = useRef<Marker[]>(initialMarkers.map((marker) => ({ ...marker })));
+  const animationFrameRef = useRef<number | null>(null);
+  const focusTimerRef = useRef<number | null>(null);
+  const resumeRotateTimerRef = useRef<number | null>(null);
+  const interactionSphereRef = useRef<any>(null);
+  const pinCoreRef = useRef<any>(null);
+  const pinHaloRef = useRef<any>(null);
+  const starMaterialRef = useRef<any>(null);
+  const pointerRef = useRef<PointerState>({
+    active: false,
+    clientX: 0,
+    clientY: 0,
+  });
+  const lastRaycastRef = useRef(0);
+  const hoverCountryRef = useRef<PreparedCountry | null>(null);
+  const countriesRef = useRef<PreparedCountry[]>([]);
+  const countryMaterialsRef = useRef<CountryMaterials | null>(null);
+  const cleanupObjectsRef = useRef<any[]>([]);
   const [isReady, setIsReady] = useState(false);
+  const [tooltip, setTooltip] = useState<CountryTooltip | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -137,30 +596,154 @@ export function GhanaServiceMap() {
       globe.height(container.clientHeight);
       globe.globeOffset?.([
         container.clientWidth >= 1280
-          ? -Math.round(container.clientWidth * 0.18)
-          : container.clientWidth >= 768
-            ? -Math.round(container.clientWidth * 0.1)
-            : -Math.round(container.clientWidth * 0.05),
-        container.clientWidth >= 1024 ? 28 : 18,
+          ? -Math.round(container.clientWidth * 0.2)
+          : container.clientWidth >= 1024
+            ? -Math.round(container.clientWidth * 0.15)
+            : container.clientWidth >= 768
+              ? -Math.round(container.clientWidth * 0.06)
+              : 0,
+        container.clientWidth >= 1024 ? 10 : 6,
       ]);
     };
 
-    const animatePulse = () => {
-      const globe = globeRef.current;
-
-      if (!globe || !isMounted) {
+    const setTooltipState = (nextTooltip: CountryTooltip | null) => {
+      if (!isMounted) {
         return;
       }
 
-      const wave = (Math.sin(performance.now() / 350) + 1) / 2;
-      const hqAltitude = 0.01 + wave * 0.04;
+      setTooltip((currentTooltip) => {
+        if (!currentTooltip && !nextTooltip) {
+          return currentTooltip;
+        }
 
-      markersRef.current = markersRef.current.map((marker) =>
-        marker.kind === "hq" ? { ...marker, altitude: hqAltitude } : marker,
-      );
+        if (
+          currentTooltip &&
+          nextTooltip &&
+          currentTooltip.name === nextTooltip.name &&
+          Math.abs(currentTooltip.x - nextTooltip.x) < 0.5 &&
+          Math.abs(currentTooltip.y - nextTooltip.y) < 0.5
+        ) {
+          return currentTooltip;
+        }
 
-      globe.pointsData([...markersRef.current]);
-      pulseFrameRef.current = window.requestAnimationFrame(animatePulse);
+        return nextTooltip;
+      });
+    };
+
+    const applyCountryLayer = () => {
+      const globe = globeRef.current;
+      const countryMaterials = countryMaterialsRef.current;
+
+      if (!globe || !countryMaterials || countriesRef.current.length === 0) {
+        return;
+      }
+
+      const hoveredCountry = hoverCountryRef.current;
+
+      globe
+        .polygonsData(countriesRef.current.map((country) => country.feature))
+        .polygonCapMaterial((feature: CountryFeature) => {
+          if (feature === hoveredCountry?.feature) {
+            return countryMaterials.hoverCap;
+          }
+
+          if (feature.properties.name === "Ghana") {
+            return countryMaterials.ghanaCap;
+          }
+
+          return countryMaterials.defaultCap;
+        })
+        .polygonSideMaterial((feature: CountryFeature) => {
+          if (feature === hoveredCountry?.feature) {
+            return countryMaterials.hoverSide;
+          }
+
+          if (feature.properties.name === "Ghana") {
+            return countryMaterials.ghanaSide;
+          }
+
+          return countryMaterials.defaultSide;
+        })
+        .polygonStrokeColor((feature: CountryFeature) => {
+          if (feature === hoveredCountry?.feature) {
+            return HOVER_STROKE;
+          }
+
+          if (feature.properties.name === "Ghana") {
+            return GHANA_STROKE;
+          }
+
+          return DEFAULT_COUNTRY_STROKE;
+        })
+        .polygonAltitude((feature: CountryFeature) => {
+          if (feature === hoveredCountry?.feature) {
+            return 0.02;
+          }
+
+          if (feature.properties.name === "Ghana") {
+            return 0.01;
+          }
+
+          return 0.0024;
+        })
+        .polygonsTransitionDuration(260);
+    };
+
+    const clearHover = () => {
+      hoverCountryRef.current = null;
+      setTooltipState(null);
+      applyCountryLayer();
+    };
+
+    const updateHoveredCountry = (
+      nextCountry: PreparedCountry | null,
+      x: number,
+      y: number,
+    ) => {
+      const previousCountry = hoverCountryRef.current;
+
+      if (previousCountry?.id !== nextCountry?.id) {
+        hoverCountryRef.current = nextCountry;
+        applyCountryLayer();
+      }
+
+      if (!nextCountry) {
+        setTooltipState(null);
+        return;
+      }
+
+      setTooltipState({
+        name: nextCountry.name,
+        x,
+        y,
+      });
+    };
+
+    const scheduleGhanaFocus = () => {
+      const globe = globeRef.current;
+      const controls = globe?.controls?.();
+
+      if (!globe || !controls) {
+        return;
+      }
+
+      focusTimerRef.current = window.setTimeout(() => {
+        if (!isMounted || !globeRef.current) {
+          return;
+        }
+
+        controls.autoRotate = false;
+        globe.pointOfView(GHANA_TARGET, GHANA_FOCUS_DURATION_MS);
+
+        resumeRotateTimerRef.current = window.setTimeout(() => {
+          if (!isMounted) {
+            return;
+          }
+
+          controls.autoRotate = true;
+          controls.autoRotateSpeed = 0.16;
+        }, GHANA_FOCUS_DURATION_MS + 120);
+      }, GHANA_FOCUS_DELAY_MS);
     };
 
     const initGlobe = async () => {
@@ -177,9 +760,71 @@ export function GhanaServiceMap() {
         return;
       }
 
+      const localRaycaster = new THREE.Raycaster();
+      const pointerVector = new THREE.Vector2();
+      const goldGlowTexture = createGlowSpriteTexture(THREE);
+      const tempPoint = new THREE.Vector3();
+
+      const applyHoverRaycast = () => {
+        const globe = globeRef.current;
+        const interactionSphere = interactionSphereRef.current;
+        const pointer = pointerRef.current;
+
+        if (!globe || !interactionSphere || !pointer.active) {
+          return;
+        }
+
+        const renderer = globe.renderer?.();
+        const camera = globe.camera?.();
+        const canvas = renderer?.domElement;
+
+        if (!canvas || !camera) {
+          return;
+        }
+
+        const bounds = canvas.getBoundingClientRect();
+        const x = ((pointer.clientX - bounds.left) / bounds.width) * 2 - 1;
+        const y = -((pointer.clientY - bounds.top) / bounds.height) * 2 + 1;
+
+        pointerVector.set(x, y);
+        localRaycaster.setFromCamera(pointerVector, camera);
+
+        const [hit] = localRaycaster.intersectObject(interactionSphere, false);
+
+        if (!hit?.uv) {
+          clearHover();
+          return;
+        }
+
+        tempPoint.copy(sphereUvToLocalPoint(THREE, GLOBE_RADIUS, hit.uv));
+        interactionSphere.localToWorld(tempPoint);
+
+        const geoPoint = globe.toGeoCoords({
+          x: tempPoint.x,
+          y: tempPoint.y,
+          z: tempPoint.z,
+        });
+
+        if (!geoPoint) {
+          clearHover();
+          return;
+        }
+
+        const hoveredCountry = findCountryAtLatLng(
+          countriesRef.current,
+          geoPoint.lat,
+          geoPoint.lng,
+        );
+
+        updateHoveredCountry(
+          hoveredCountry,
+          pointer.clientX - bounds.left,
+          pointer.clientY - bounds.top,
+        );
+      };
+
       container.innerHTML = "";
 
-      const ghanaFeature = ghanaBoundary.features[0];
       const globe = new Globe(container, {
         animateIn: false,
         waitForGlobeReady: true,
@@ -187,81 +832,54 @@ export function GhanaServiceMap() {
         .backgroundColor("rgba(0,0,0,0)")
         .globeImageUrl(SURFACE_EARTH_TEXTURE)
         .bumpImageUrl(TOPOLOGY_TEXTURE)
-        .showAtmosphere(true)
-        .atmosphereColor("#4db86a")
-        .atmosphereAltitude(0.15)
-        .polygonsData([ghanaFeature])
-        .polygonCapColor(() => `${GHANA_FOREST}b3`)
-        .polygonSideColor(() => `${GHANA_FOREST}40`)
-        .polygonStrokeColor(() => GOLD)
-        .polygonAltitude(0.055)
-        .polygonsTransitionDuration(800)
-        .pointsData([...markersRef.current])
-        .pointLat("lat")
-        .pointLng("lng")
-        .pointAltitude((markerObj: object) => (markerObj as Marker).altitude)
-        .pointRadius((markerObj: object) => (markerObj as Marker).size)
-        .pointColor((markerObj: object) => {
-          const marker = markerObj as Marker;
-          return marker.kind === "hq" ? GOLD : ACTIVE_REGION_GREEN;
-        })
-        .pointLabel((markerObj: object) => (markerObj as Marker).name)
-        .ringsData([kumasiMarker])
-        .ringLat("lat")
-        .ringLng("lng")
-        .ringColor(() => [GOLD, "rgba(232,184,75,0)"])
-        .ringAltitude(0.002)
-        .ringMaxRadius(3.5)
-        .ringPropagationSpeed(1.1)
-        .ringRepeatPeriod(1200)
-        .arcsData(routeArcs)
-        .arcStartLat("startLat")
-        .arcStartLng("startLng")
-        .arcEndLat("endLat")
-        .arcEndLng("endLng")
-        .arcAltitude(0.3)
-        .arcColor(() => [GOLD, GOLD])
-        .arcStroke(0.8)
-        .arcDashLength(0.36)
-        .arcDashGap(1)
-        .arcDashAnimateTime(2000)
-        .arcLabel((arcObj: object) => (arcObj as RouteArc).name)
+        .showAtmosphere(false)
+        .polygonCapCurvatureResolution(2.4)
+        .polygonsTransitionDuration(260)
+        .enablePointerInteraction(false)
+        .showPointerCursor(false)
         .onGlobeReady(() => {
           const currentMaterial = globe.globeMaterial() as any;
+
           if (currentMaterial.map) {
             currentMaterial.map.colorSpace = THREE.SRGBColorSpace;
             currentMaterial.map.needsUpdate = true;
           }
 
-          globe.pointOfView(ghanaPointOfView, 0);
+          globe.pointOfView(INITIAL_POINT_OF_VIEW, 0);
           syncDimensions();
+          scheduleGhanaFocus();
           setIsReady(true);
         });
 
       const globeMaterial = globe.globeMaterial() as any;
       const cityLightsMap = new THREE.TextureLoader().load(CITY_LIGHTS_TEXTURE);
-
       cityLightsMap.colorSpace = THREE.SRGBColorSpace;
 
-      globeMaterial.color = new THREE.Color("#f6fff9");
-      globeMaterial.emissive = new THREE.Color(GOLD);
+      globeMaterial.color = new THREE.Color("#f6fff7");
+      globeMaterial.emissive = new THREE.Color("#56c773");
       globeMaterial.emissiveMap = cityLightsMap;
-      globeMaterial.emissiveIntensity = 0.6;
-      globeMaterial.bumpScale = 10;
+      globeMaterial.emissiveIntensity = 0.38;
+      globeMaterial.bumpScale = 9;
       globeMaterial.shininess = 18;
-      globeMaterial.specular = new THREE.Color("#6fd1c0");
+      globeMaterial.specular = new THREE.Color("#7af0b6");
       globeMaterial.needsUpdate = true;
 
       globe.lights([
-        new THREE.AmbientLight("#ffffff", 2.5),
+        new THREE.AmbientLight("#d8ffe8", 1.95),
         (() => {
-          const directionalLight = new THREE.DirectionalLight("#ffffff", 1.8);
-          directionalLight.position.set(-1.6, 1.2, 1.8);
+          const directionalLight = new THREE.DirectionalLight("#dfffe9", 1.55);
+          directionalLight.position.set(-1.6, 1.15, 1.85);
           return directionalLight;
+        })(),
+        (() => {
+          const goldAccent = new THREE.DirectionalLight("#ffd84d", 0.72);
+          goldAccent.position.set(1.15, -0.3, 1.9);
+          return goldAccent;
         })(),
       ]);
 
       const renderer = globe.renderer?.();
+
       if (renderer) {
         renderer.setClearColor(0x000000, 0);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -269,19 +887,263 @@ export function GhanaServiceMap() {
       }
 
       const controls = globe.controls?.();
+
       if (controls) {
         controls.enablePan = false;
         controls.enableZoom = false;
         controls.enableRotate = true;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.6;
-        controls.minDistance = 110;
-        controls.maxDistance = 480;
+        controls.autoRotateSpeed = 0.34;
         controls.rotateSpeed = 0.75;
+        controls.minDistance = 160;
+        controls.maxDistance = 260;
         controls.zoomSpeed = 0;
       }
 
+      countryMaterialsRef.current = createCountryMaterials(THREE);
+
+      const scene = globe.scene?.();
+
+      if (scene) {
+        const interactionSphere = new THREE.Mesh(
+          new THREE.SphereGeometry(GLOBE_RADIUS, 72, 72),
+          new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0,
+            depthWrite: false,
+          }),
+        );
+        interactionSphere.rotation.y = -Math.PI / 2;
+        interactionSphere.renderOrder = -1;
+        interactionSphereRef.current = interactionSphere;
+        cleanupObjectsRef.current.push(interactionSphere);
+        scene.add(interactionSphere);
+
+        const gridMaterial = new THREE.ShaderMaterial({
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          uniforms: {
+            uColor: { value: new THREE.Color(HOVER_COLOR) },
+            uMinorOpacity: { value: 0.028 },
+            uMajorOpacity: { value: 0.08 },
+          },
+          vertexShader: `
+            varying vec3 vWorldPosition;
+
+            void main() {
+              vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+              vWorldPosition = worldPosition.xyz;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+          fragmentShader: `
+            varying vec3 vWorldPosition;
+
+            uniform vec3 uColor;
+            uniform float uMinorOpacity;
+            uniform float uMajorOpacity;
+
+            float lineMask(float value) {
+              float grid = abs(fract(value - 0.5) - 0.5) / fwidth(value);
+              return 1.0 - min(grid, 1.0);
+            }
+
+            void main() {
+              vec3 normal = normalize(vWorldPosition);
+              float latitude = asin(normal.y);
+              float longitude = atan(normal.z, normal.x);
+              float longitudeValue = (longitude + 3.141592653589793) / 6.283185307179586;
+              float latitudeValue = (latitude + 1.5707963267948966) / 3.141592653589793;
+
+              float minorGrid = max(
+                lineMask(longitudeValue * 36.0),
+                lineMask(latitudeValue * 18.0)
+              );
+
+              float majorGrid = max(
+                lineMask(longitudeValue * 12.0),
+                lineMask(latitudeValue * 6.0)
+              );
+
+              float alpha = minorGrid * uMinorOpacity + majorGrid * uMajorOpacity;
+              gl_FragColor = vec4(uColor, alpha);
+            }
+          `,
+        });
+
+        const gridSphere = new THREE.Mesh(
+          new THREE.SphereGeometry(GLOBE_RADIUS * 1.0025, 96, 96),
+          gridMaterial,
+        );
+        gridSphere.rotation.y = -Math.PI / 2;
+        cleanupObjectsRef.current.push(gridSphere);
+        scene.add(gridSphere);
+
+        const atmosphereMaterial = new THREE.ShaderMaterial({
+          transparent: true,
+          side: THREE.BackSide,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          uniforms: {
+            uColor: { value: new THREE.Color(HOVER_COLOR) },
+          },
+          vertexShader: `
+            varying vec3 vNormal;
+            varying vec3 vViewDirection;
+
+            void main() {
+              vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+              vec3 worldNormal = normalize(mat3(modelMatrix) * normal);
+              vNormal = worldNormal;
+              vViewDirection = normalize(cameraPosition - worldPosition.xyz);
+              gl_Position = projectionMatrix * viewMatrix * worldPosition;
+            }
+          `,
+          fragmentShader: `
+            varying vec3 vNormal;
+            varying vec3 vViewDirection;
+
+            uniform vec3 uColor;
+
+            void main() {
+              float fresnel = pow(1.0 - abs(dot(normalize(vNormal), normalize(vViewDirection))), 3.8);
+              float alpha = smoothstep(0.14, 0.78, fresnel) * 0.33;
+              gl_FragColor = vec4(uColor, alpha);
+            }
+          `,
+        });
+
+        const atmosphereGlow = new THREE.Mesh(
+          new THREE.SphereGeometry(GLOBE_RADIUS * 1.065, 96, 96),
+          atmosphereMaterial,
+        );
+        atmosphereGlow.rotation.y = -Math.PI / 2;
+        cleanupObjectsRef.current.push(atmosphereGlow);
+        scene.add(atmosphereGlow);
+
+        const starCount = 420;
+        const positions = new Float32Array(starCount * 3);
+        const sizes = new Float32Array(starCount);
+        const phases = new Float32Array(starCount);
+        const speeds = new Float32Array(starCount);
+        const strengths = new Float32Array(starCount);
+
+        for (let index = 0; index < starCount; index += 1) {
+          const radius = 430 + Math.random() * 420;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          const sinPhi = Math.sin(phi);
+          const offset = index * 3;
+
+          positions[offset] = radius * sinPhi * Math.cos(theta);
+          positions[offset + 1] = radius * Math.cos(phi);
+          positions[offset + 2] = radius * sinPhi * Math.sin(theta);
+          sizes[index] = 0.9 + Math.random() * 2.2;
+          phases[index] = Math.random() * Math.PI * 2;
+          speeds[index] = 0.55 + Math.random() * 1.4;
+          strengths[index] = 0.3 + Math.random() * 0.65;
+        }
+
+        const starGeometry = new THREE.BufferGeometry();
+        starGeometry.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(positions, 3),
+        );
+        starGeometry.setAttribute(
+          "aSize",
+          new THREE.Float32BufferAttribute(sizes, 1),
+        );
+        starGeometry.setAttribute(
+          "aPhase",
+          new THREE.Float32BufferAttribute(phases, 1),
+        );
+        starGeometry.setAttribute(
+          "aSpeed",
+          new THREE.Float32BufferAttribute(speeds, 1),
+        );
+        starGeometry.setAttribute(
+          "aStrength",
+          new THREE.Float32BufferAttribute(strengths, 1),
+        );
+
+        const starMaterial = new THREE.ShaderMaterial({
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          uniforms: {
+            uTime: { value: 0 },
+          },
+          vertexShader: `
+            attribute float aSize;
+            attribute float aPhase;
+            attribute float aSpeed;
+            attribute float aStrength;
+
+            uniform float uTime;
+
+            varying float vStrength;
+
+            void main() {
+              vStrength = aStrength * (0.55 + 0.45 * sin(uTime * aSpeed + aPhase));
+              vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+              gl_PointSize = aSize * (300.0 / -mvPosition.z);
+              gl_Position = projectionMatrix * mvPosition;
+            }
+          `,
+          fragmentShader: `
+            varying float vStrength;
+
+            void main() {
+              float distanceToCenter = length(gl_PointCoord - vec2(0.5));
+              float alpha = smoothstep(0.48, 0.0, distanceToCenter) * vStrength;
+              vec3 color = mix(vec3(0.72, 1.0, 0.85), vec3(1.0, 0.95, 0.72), 0.24);
+              gl_FragColor = vec4(color, alpha);
+            }
+          `,
+        });
+
+        const starPoints = new THREE.Points(starGeometry, starMaterial);
+        starMaterialRef.current = starMaterial;
+        cleanupObjectsRef.current.push(starPoints);
+        scene.add(starPoints);
+
+        const ghanaPinGroup = new THREE.Group();
+        const pinPosition = globe.getCoords(GHANA_TARGET.lat, GHANA_TARGET.lng, 0.022);
+        ghanaPinGroup.position.set(pinPosition.x, pinPosition.y, pinPosition.z);
+
+        const pinCore = new THREE.Mesh(
+          new THREE.SphereGeometry(1.8, 18, 18),
+          new THREE.MeshBasicMaterial({
+            color: GHANA_COLOR,
+            transparent: true,
+            opacity: 1,
+          }),
+        );
+
+        const haloMaterial = new THREE.SpriteMaterial({
+          map: goldGlowTexture,
+          color: GHANA_COLOR,
+          transparent: true,
+          opacity: 0.45,
+          depthWrite: false,
+          depthTest: false,
+        });
+
+        const pinHalo = new THREE.Sprite(haloMaterial);
+        pinHalo.scale.set(14, 14, 1);
+
+        ghanaPinGroup.add(pinHalo);
+        ghanaPinGroup.add(pinCore);
+
+        pinCoreRef.current = pinCore;
+        pinHaloRef.current = pinHalo;
+        cleanupObjectsRef.current.push(ghanaPinGroup);
+        scene.add(ghanaPinGroup);
+      }
+
       globeRef.current = globe;
+
       syncDimensions();
 
       resizeObserverRef.current = new ResizeObserver(() => {
@@ -289,19 +1151,113 @@ export function GhanaServiceMap() {
       });
       resizeObserverRef.current.observe(container);
 
-      pulseFrameRef.current = window.requestAnimationFrame(animatePulse);
+      const handlePointerMove = (event: PointerEvent) => {
+        pointerRef.current = {
+          active: true,
+          clientX: event.clientX,
+          clientY: event.clientY,
+        };
+      };
+
+      const handlePointerLeave = () => {
+        pointerRef.current.active = false;
+        clearHover();
+      };
+
+      container.addEventListener("pointermove", handlePointerMove, { passive: true });
+      container.addEventListener("pointerleave", handlePointerLeave, { passive: true });
+
+      const animate = () => {
+        if (!isMounted) {
+          return;
+        }
+
+        const now = performance.now();
+
+        if (starMaterialRef.current?.uniforms?.uTime) {
+          starMaterialRef.current.uniforms.uTime.value = now * 0.0012;
+        }
+
+        const pulseProgress =
+          (Math.sin((now / GHANA_PULSE_DURATION_MS) * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+
+        if (pinCoreRef.current) {
+          const coreScale = 1 + pulseProgress * 0.12;
+          pinCoreRef.current.scale.setScalar(coreScale);
+        }
+
+        if (pinHaloRef.current) {
+          const haloScale = 13 + pulseProgress * 8;
+          pinHaloRef.current.scale.set(haloScale, haloScale, 1);
+          pinHaloRef.current.material.opacity = 0.18 + (1 - pulseProgress) * 0.28;
+        }
+
+        if (
+          pointerRef.current.active &&
+          now - lastRaycastRef.current >= RAYCAST_INTERVAL_MS
+        ) {
+          applyHoverRaycast();
+          lastRaycastRef.current = now;
+        }
+
+        animationFrameRef.current = window.requestAnimationFrame(animate);
+      };
+
+      animationFrameRef.current = window.requestAnimationFrame(animate);
+
+      void loadCountries().then((countries) => {
+        if (!isMounted) {
+          return;
+        }
+
+        countriesRef.current = countries;
+        applyCountryLayer();
+      });
+
+      return () => {
+        container.removeEventListener("pointermove", handlePointerMove);
+        container.removeEventListener("pointerleave", handlePointerLeave);
+      };
     };
 
-    initGlobe();
+    let removePointerListeners: (() => void) | undefined;
+
+    void initGlobe().then((cleanup) => {
+      removePointerListeners = cleanup;
+    });
 
     return () => {
       isMounted = false;
 
-      if (pulseFrameRef.current) {
-        window.cancelAnimationFrame(pulseFrameRef.current);
+      removePointerListeners?.();
+
+      if (animationFrameRef.current) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+
+      if (focusTimerRef.current) {
+        window.clearTimeout(focusTimerRef.current);
+      }
+
+      if (resumeRotateTimerRef.current) {
+        window.clearTimeout(resumeRotateTimerRef.current);
       }
 
       resizeObserverRef.current?.disconnect();
+      setTooltip(null);
+
+      cleanupObjectsRef.current.forEach((object) => {
+        globeRef.current?.scene?.()?.remove?.(object);
+        disposeObject3D(object);
+      });
+      cleanupObjectsRef.current = [];
+
+      if (countryMaterialsRef.current) {
+        Object.values(countryMaterialsRef.current).forEach((material) =>
+          disposeMaterial(material),
+        );
+      }
+
       globeRef.current?.pauseAnimation?.();
       globeRef.current = null;
     };
@@ -324,44 +1280,102 @@ export function GhanaServiceMap() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-70"
-        style={{
-          backgroundImage: STARFIELD_PATTERN,
-          backgroundPosition: "0 0, 42px 86px, 120px 34px",
-          backgroundSize: "180px 180px, 260px 260px, 320px 320px",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-70"
+        className="pointer-events-none absolute inset-0 opacity-75"
         style={{ backgroundImage: STAR_GLOW_PATTERN }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(77,184,106,0.12),transparent_22%),radial-gradient(circle_at_42%_18%,rgba(255,255,255,0.06),transparent_18%),radial-gradient(circle_at_84%_60%,rgba(10,26,16,0.52),transparent_28%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_38%,rgba(0,255,136,0.1),transparent_22%),radial-gradient(circle_at_78%_22%,rgba(255,215,0,0.08),transparent_18%),radial-gradient(circle_at_82%_72%,rgba(10,31,15,0.78),transparent_30%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-[-1px] z-20 h-24 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,#06100b_100%)]"
       />
 
-      <div className="relative pt-10 lg:pt-14">
-        <div
-          className="relative overflow-hidden"
-          style={{
-            WebkitMaskImage: EDGE_FADE_MASK,
-            maskImage: EDGE_FADE_MASK,
-          }}
-        >
-          <div
-            ref={globeContainerRef}
-            className="h-[400px] w-full cursor-grab touch-pan-y active:cursor-grabbing md:h-[520px] lg:h-[640px]"
-            aria-label="Interactive globe showing Ghana, Kumasi headquarters, and regional service routes"
-          />
+      <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-10 sm:px-6 lg:px-8 lg:pb-0 lg:pt-14">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.62fr)_minmax(320px,0.7fr)] lg:items-center">
+          <div className="order-2 lg:order-1 lg:-ml-20 xl:-ml-36">
+            <div
+              className="relative overflow-hidden"
+              style={{
+                WebkitMaskImage: EDGE_FADE_MASK,
+                maskImage: EDGE_FADE_MASK,
+              }}
+            >
+              <div
+                ref={globeContainerRef}
+                className="h-[420px] w-full cursor-grab touch-pan-y active:cursor-grabbing md:h-[540px] lg:h-[700px]"
+                aria-label="Interactive globe with world countries, hover highlights, and Ghana focus"
+              />
 
-          {!isReady ? (
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-cream/65">
-                Loading Interactive Globe
-              </span>
+              {tooltip ? (
+                <div
+                  className="pointer-events-none absolute z-30 rounded-2xl border border-emerald-300/20 bg-[#07140dcc] px-3 py-2 text-xs font-medium tracking-[0.12em] text-cream shadow-[0_16px_32px_rgba(0,0,0,0.28)] backdrop-blur-md"
+                  style={{
+                    left: tooltip.x,
+                    top: tooltip.y,
+                    transform: "translate(16px, -50%)",
+                  }}
+                >
+                  {tooltip.name}
+                </div>
+              ) : null}
+
+              {!isReady ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-cream/65">
+                    Loading Interactive Globe
+                  </span>
+                </div>
+              ) : null}
             </div>
-          ) : null}
+          </div>
+
+          <div className="order-1 relative z-10 lg:order-2 lg:pb-24">
+            <div className="group mx-auto w-full max-w-[21rem] rounded-[2rem] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-5 shadow-[0_26px_60px_rgba(2,7,4,0.34)] backdrop-blur-md">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-gold/82">
+                    Media Hub
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-cream/66">
+                    Hover and preview stacked moments from the brand.
+                  </p>
+                </div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-300/18 bg-[#0d2415]">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#00ff88] shadow-[0_0_18px_rgba(0,255,136,0.9)]" />
+                </div>
+              </div>
+
+              <div className="relative mt-6 h-[22rem] overflow-visible">
+                {mediaHubItems.map((item) => (
+                  <article
+                    key={item.title}
+                    className={`absolute inset-x-0 top-0 overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0b1a11] shadow-[0_20px_40px_rgba(0,0,0,0.22)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-40 hover:-translate-y-2 hover:scale-[1.01] ${item.baseClassName}`}
+                  >
+                    <div className="relative h-44">
+                      <Image
+                        src={item.src}
+                        alt={item.alt}
+                        fill
+                        sizes="(min-width: 1024px) 21rem, 80vw"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      />
+                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,10,6,0.05)_0%,rgba(4,10,6,0.2)_44%,rgba(4,10,6,0.82)_100%)]" />
+                    </div>
+                    <div className="p-4">
+                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#00ff88]/82">
+                        {item.tag}
+                      </p>
+                      <h3 className="mt-2 text-lg font-semibold text-cream">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

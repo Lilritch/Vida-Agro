@@ -6,7 +6,7 @@ interface PageHeroProps {
 
 export function PageHero({ eyebrow, title, description }: PageHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-forest-green pt-36 pb-20 lg:pt-44 lg:pb-28">
+    <section className="relative overflow-hidden bg-forest-green pt-32 pb-16 sm:pt-36 lg:pt-40 lg:pb-24">
       <div className="absolute inset-0">
         <div className="absolute inset-0 dot-grid opacity-20" />
         <div
@@ -19,15 +19,18 @@ export function PageHero({ eyebrow, title, description }: PageHeroProps) {
         />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-block text-gold font-semibold tracking-widest uppercase text-sm mb-4">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[42rem]">
+          <span className="mb-4 inline-block text-xs font-semibold uppercase tracking-[0.28em] text-gold sm:text-sm">
             {eyebrow}
           </span>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-cream mb-6">
+          <h1 className="mb-5 max-w-[36rem] font-serif text-[2.15rem] font-bold leading-tight text-cream sm:text-[2.75rem] lg:text-[3.45rem]">
             {title}
           </h1>
-          <p className="text-cream text-lg leading-relaxed" style={{ opacity: 0.78 }}>
+          <p
+            className="max-w-2xl text-base leading-7 text-cream sm:text-lg sm:leading-8"
+            style={{ opacity: 0.78 }}
+          >
             {description}
           </p>
         </div>
