@@ -46,12 +46,12 @@ export function Footer() {
         className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(6,16,11,0.94)_0%,rgba(6,16,11,0.64)_32%,transparent_100%)]"
       />
       
-      <div className="container relative z-10 mx-auto px-4 py-16 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+      <div className="container relative z-10 mx-auto px-4 py-12 sm:py-16 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {/* Logo & Tagline */}
-          <div className="lg:col-span-1">
+          <div className="max-w-sm lg:col-span-1">
             <Logo size="lg" variant="light" className="mb-6" />
-            <p className="text-cream leading-relaxed mb-6" style={{ opacity: 0.6 }}>
+            <p className="mb-6 max-w-[18rem] text-sm leading-6 text-cream sm:text-base sm:leading-relaxed" style={{ opacity: 0.6 }}>
               Protecting Crops. Controlling Vectors. Empowering Ghana.
             </p>
             <div className="flex items-center gap-3">
@@ -72,8 +72,8 @@ export function Footer() {
           </div>
 
           {/* Company Links */}
-          <div>
-            <h4 className="font-serif font-bold text-cream text-lg mb-6">Company</h4>
+          <div className="max-w-sm">
+            <h4 className="mb-5 font-serif text-lg font-bold text-cream">Company</h4>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.label}>
@@ -92,8 +92,8 @@ export function Footer() {
           </div>
 
           {/* Services Links */}
-          <div>
-            <h4 className="font-serif font-bold text-cream text-lg mb-6">Services</h4>
+          <div className="max-w-sm">
+            <h4 className="mb-5 font-serif text-lg font-bold text-cream">Services</h4>
             <ul className="space-y-3">
               {serviceLinks.map((link) => (
                 <li key={link.label}>
@@ -112,12 +112,12 @@ export function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div>
-            <h4 className="font-serif font-bold text-cream text-lg mb-6">Contact Us</h4>
+          <div className="max-w-sm">
+            <h4 className="mb-5 font-serif text-lg font-bold text-cream">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-gold flex-shrink-0 mt-0.5" />
-                <span className="text-cream" style={{ opacity: 0.6 }}>
+                <span className="max-w-[15rem] text-sm leading-6 text-cream sm:max-w-[16rem] sm:text-base" style={{ opacity: 0.6 }}>
                   Plot 17 Block B, Suame-Kumasi,<br />
                   Ashanti Region, Ghana
                 </span>
@@ -125,7 +125,7 @@ export function Footer() {
               <li>
                 <a
                   href="tel:+233245407874"
-                  className="flex items-center gap-3 text-cream hover:text-gold transition-colors"
+                  className="flex items-center gap-3 text-sm text-cream transition-colors hover:text-gold sm:text-base"
                   style={{ opacity: 0.6 }}
                   onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                   onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
@@ -137,13 +137,13 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:vidaagrochemicals@gmail.com"
-                  className="flex items-center gap-3 text-cream hover:text-gold transition-colors break-all"
+                  className="flex max-w-[17rem] items-start gap-3 text-sm text-cream transition-colors hover:text-gold sm:max-w-[16rem] sm:text-base"
                   style={{ opacity: 0.6 }}
                   onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                   onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
                 >
-                  <Mail className="w-5 h-5 text-gold flex-shrink-0" />
-                  vidaagrochemicals@gmail.com
+                  <Mail className="mt-0.5 h-5 w-5 flex-shrink-0 text-gold" />
+                  <span className="leading-6 break-words">vidaagrochemicals@gmail.com</span>
                 </a>
               </li>
             </ul>
@@ -154,14 +154,14 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-cream text-sm text-center sm:text-left" style={{ opacity: 0.4 }}>
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-start">
+            <p className="max-w-[18rem] text-center text-sm leading-6 text-cream sm:max-w-md sm:text-left" style={{ opacity: 0.4 }}>
               &copy; {currentYear} Vida Asamoah Agrochemicals & Vector Control Limited. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 sm:justify-end">
               <Link
                 href="#"
-                className="text-cream hover:text-gold text-sm transition-colors"
+                className="text-sm text-cream transition-colors hover:text-gold"
                 style={{ opacity: 0.4 }}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '0.4'}
@@ -170,7 +170,7 @@ export function Footer() {
               </Link>
               <Link
                 href="#"
-                className="text-cream hover:text-gold text-sm transition-colors"
+                className="text-sm text-cream transition-colors hover:text-gold"
                 style={{ opacity: 0.4 }}
                 onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '0.4'}

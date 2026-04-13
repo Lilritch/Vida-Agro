@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ghanaBoundary from "@/data/ghana-country.geo.json";
 
@@ -36,33 +35,6 @@ const RAYCAST_INTERVAL_MS = 16;
 const GHANA_FOCUS_DELAY_MS = 2000;
 const GHANA_FOCUS_DURATION_MS = 2200;
 const GHANA_PULSE_DURATION_MS = 2000;
-
-const mediaHubItems = [
-  {
-    title: "Field Activity",
-    tag: "On-site support",
-    src: "/site-media/hero/hero-pexels-4975354.jpeg",
-    alt: "Field activity preview",
-    baseClassName:
-      "z-30 -rotate-[5deg] translate-x-0 translate-y-10 group-hover:-translate-x-10 group-hover:translate-y-0 group-hover:-rotate-[10deg]",
-  },
-  {
-    title: "Product Shelf",
-    tag: "Ready inventory",
-    src: "/site-media/products/kabaplus.jpg",
-    alt: "Product inventory preview",
-    baseClassName:
-      "z-20 rotate-[1deg] translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:-translate-y-10 group-hover:rotate-[2deg]",
-  },
-  {
-    title: "Crop Care",
-    tag: "Trusted inputs",
-    src: "/site-media/products/wuxal.jpg",
-    alt: "Crop care product preview",
-    baseClassName:
-      "z-10 rotate-[7deg] translate-x-8 translate-y-0 group-hover:translate-x-14 group-hover:translate-y-12 group-hover:rotate-[11deg]",
-  },
-] as const;
 
 type LngLat = [number, number];
 
@@ -601,7 +573,7 @@ export function GhanaServiceMap() {
             ? -Math.round(container.clientWidth * 0.15)
             : container.clientWidth >= 768
               ? -Math.round(container.clientWidth * 0.06)
-              : 0,
+              : -Math.round(container.clientWidth * 0.12),
         container.clientWidth >= 1024 ? 10 : 6,
       ]);
     };
@@ -1292,11 +1264,11 @@ export function GhanaServiceMap() {
         className="pointer-events-none absolute inset-x-0 bottom-[-1px] z-20 h-24 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,#06100b_100%)]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-10 sm:px-6 lg:px-8 lg:pb-0 lg:pt-14">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.62fr)_minmax(320px,0.7fr)] lg:items-center">
-          <div className="order-2 lg:order-1 lg:-ml-20 xl:-ml-36">
+      <div className="relative mx-auto max-w-7xl px-4 pb-6 pt-10 sm:px-6 sm:pb-8 lg:px-8 lg:pb-0 lg:pt-14">
+        <div className="grid gap-8 sm:gap-10 lg:grid-cols-[minmax(0,1.62fr)_minmax(320px,0.72fr)] lg:items-center">
+          <div className="order-2 overflow-hidden lg:order-1 lg:-ml-20 xl:-ml-36">
             <div
-              className="relative overflow-hidden"
+              className="relative mx-auto w-full max-w-[28rem] overflow-hidden sm:max-w-[32rem] md:max-w-[40rem] lg:max-w-none"
               style={{
                 WebkitMaskImage: EDGE_FADE_MASK,
                 maskImage: EDGE_FADE_MASK,
@@ -1304,7 +1276,7 @@ export function GhanaServiceMap() {
             >
               <div
                 ref={globeContainerRef}
-                className="h-[420px] w-full cursor-grab touch-pan-y active:cursor-grabbing md:h-[540px] lg:h-[700px]"
+                className="h-[360px] w-full cursor-grab touch-pan-y active:cursor-grabbing sm:h-[440px] md:h-[540px] lg:h-[700px]"
                 aria-label="Interactive globe with world countries, hover highlights, and Ghana focus"
               />
 
@@ -1331,49 +1303,29 @@ export function GhanaServiceMap() {
             </div>
           </div>
 
-          <div className="order-1 relative z-10 lg:order-2 lg:pb-24">
-            <div className="group mx-auto w-full max-w-[21rem] rounded-[2rem] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-5 shadow-[0_26px_60px_rgba(2,7,4,0.34)] backdrop-blur-md">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-gold/82">
-                    Media Hub
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-cream/66">
-                    Hover and preview stacked moments from the brand.
-                  </p>
-                </div>
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-300/18 bg-[#0d2415]">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#00ff88] shadow-[0_0_18px_rgba(0,255,136,0.9)]" />
-                </div>
-              </div>
-
-              <div className="relative mt-6 h-[22rem] overflow-visible">
-                {mediaHubItems.map((item) => (
-                  <article
-                    key={item.title}
-                    className={`absolute inset-x-0 top-0 overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0b1a11] shadow-[0_20px_40px_rgba(0,0,0,0.22)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-40 hover:-translate-y-2 hover:scale-[1.01] ${item.baseClassName}`}
-                  >
-                    <div className="relative h-44">
-                      <Image
-                        src={item.src}
-                        alt={item.alt}
-                        fill
-                        sizes="(min-width: 1024px) 21rem, 80vw"
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                      />
-                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,10,6,0.05)_0%,rgba(4,10,6,0.2)_44%,rgba(4,10,6,0.82)_100%)]" />
-                    </div>
-                    <div className="p-4">
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#00ff88]/82">
-                        {item.tag}
-                      </p>
-                      <h3 className="mt-2 text-lg font-semibold text-cream">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </article>
-                ))}
-              </div>
+          <div className="order-1 relative z-10 flex items-center lg:order-2 lg:min-h-[700px] lg:pb-24">
+            <div className="relative mx-auto w-full max-w-[30rem] px-2 sm:px-4 lg:max-w-[28rem] lg:px-0">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -left-10 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(0,255,136,0.16)_0%,rgba(0,255,136,0.04)_42%,transparent_72%)] blur-2xl"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute right-0 top-8 h-28 w-28 rounded-full bg-[radial-gradient(circle,rgba(255,215,0,0.16)_0%,rgba(255,215,0,0.03)_55%,transparent_78%)] blur-2xl"
+              />
+              <h2
+                className="relative text-[2.15rem] leading-[0.94] text-cream sm:text-[2.8rem] lg:text-[3.6rem]"
+                style={{
+                  fontFamily:
+                    '"Zapfino","Snell Roundhand","Apple Chancery","URW Chancery L","Lucida Calligraphy",cursive',
+                  fontWeight: 400,
+                  letterSpacing: "0.01em",
+                  textShadow: "0 10px 30px rgba(0,0,0,0.18)",
+                }}
+              >
+                Rooted in Ghana,
+                <span className="mt-2 block text-gold/92">in conversation with the world.</span>
+              </h2>
             </div>
           </div>
         </div>

@@ -92,6 +92,33 @@ const products = [
   },
 ];
 
+const mediaHubItems = [
+  {
+    title: "Field Activity",
+    tag: "On-site support",
+    src: "/site-media/hero/hero-pexels-4975354.jpeg",
+    alt: "Field activity preview",
+    baseClassName:
+      "z-30 -rotate-[3deg] translate-x-0 translate-y-8 md:-rotate-[5deg] md:translate-y-10 group-hover:-translate-x-2 group-hover:translate-y-1 group-hover:-rotate-[5deg] md:group-hover:-translate-x-10 md:group-hover:translate-y-0 md:group-hover:-rotate-[10deg]",
+  },
+  {
+    title: "Product Shelf",
+    tag: "Ready inventory",
+    src: "/site-media/products/kabaplus.jpg",
+    alt: "Product inventory preview",
+    baseClassName:
+      "z-20 rotate-[1deg] translate-x-1 translate-y-3 md:translate-x-4 md:translate-y-4 group-hover:translate-x-0 group-hover:-translate-y-4 group-hover:rotate-[2deg] md:group-hover:translate-x-2 md:group-hover:-translate-y-10",
+  },
+  {
+    title: "Crop Care",
+    tag: "Trusted inputs",
+    src: "/site-media/products/wuxal.jpg",
+    alt: "Crop care product preview",
+    baseClassName:
+      "z-10 rotate-[3deg] translate-x-2 translate-y-0 md:rotate-[7deg] md:translate-x-8 group-hover:translate-x-3 group-hover:translate-y-6 group-hover:rotate-[5deg] md:group-hover:translate-x-14 md:group-hover:translate-y-12 md:group-hover:rotate-[11deg]",
+  },
+] as const;
+
 interface ProductsProps {
   collapsible?: boolean;
 }
@@ -143,6 +170,69 @@ export function Products({ collapsible = false }: ProductsProps) {
                     )}
                   />
                 </button>
+              </div>
+            </div>
+          ) : null}
+
+          {!collapsible ? (
+            <div className="mb-14">
+              <div className="mb-10 flex justify-center lg:mb-12">
+                <div className="group w-full max-w-[28rem] rounded-[2rem] border border-forest-green/10 bg-[linear-gradient(180deg,#f7f3e7_0%,#ffffff_100%)] p-4 shadow-[0_28px_60px_rgba(13,31,20,0.12)] sm:p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-gold/90">
+                        Media Hub
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-forest-green/65">
+                        A quick look at the people, products, and field moments behind the brand.
+                      </p>
+                    </div>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-forest-green/10 bg-forest-green">
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#00ff88] shadow-[0_0_18px_rgba(0,255,136,0.7)]" />
+                    </div>
+                  </div>
+
+                  <div className="relative mt-6 h-[20rem] overflow-hidden sm:h-[22rem]">
+                    {mediaHubItems.map((item) => (
+                      <article
+                        key={item.title}
+                        className={`absolute inset-x-0 top-0 overflow-hidden rounded-[1.6rem] border border-forest-green/8 bg-[#0b1a11] shadow-[0_20px_40px_rgba(0,0,0,0.16)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-40 hover:-translate-y-2 hover:scale-[1.01] ${item.baseClassName}`}
+                      >
+                        <div className="relative h-44">
+                          <Image
+                            src={item.src}
+                            alt={item.alt}
+                            fill
+                            sizes="(min-width: 1024px) 28rem, (min-width: 640px) 28rem, 100vw"
+                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                          />
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,10,6,0.05)_0%,rgba(4,10,6,0.2)_44%,rgba(4,10,6,0.82)_100%)]" />
+                        </div>
+                        <div className="p-4">
+                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#00ff88]/82">
+                            {item.tag}
+                          </p>
+                          <h3 className="mt-2 text-lg font-semibold text-cream">
+                            {item.title}
+                          </h3>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="max-w-2xl">
+                <span className="inline-block text-sm font-semibold uppercase tracking-[0.22em] text-gold">
+                  Our Products
+                </span>
+                <h2 className="mt-4 font-serif text-3xl font-bold leading-tight text-forest-green sm:text-4xl">
+                  Practical inputs, field-ready support, and a product mix built for modern agriculture.
+                </h2>
+                <p className="mt-5 max-w-xl text-base leading-8 text-forest-green/70">
+                  Explore trusted solutions across crop protection, plant nutrition, and public health, backed by a company
+                  that pairs dependable supply with hands-on guidance.
+                </p>
               </div>
             </div>
           ) : null}
